@@ -9,7 +9,7 @@ struct WeatherResponse {
 
 #[derive(Debug, Deserialize)]
 struct CurrentWeather {
-    time: String,
+    //time: String, // will be used later
     #[serde(rename = "temperature_2m")]
     temperature: f64,
     weather_code: i32,
