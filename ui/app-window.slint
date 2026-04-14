@@ -1,6 +1,10 @@
 export component MainWindow inherits Window {
+    in property <float> temperature;
+    in property <string> city-name;
+    in property <int> weather-code;
+    
     Text {
-        text: "hello world";
+        text: "Current temperature in " + city-name + ": " + temperature + "°F" + " (weather code: " + weather-code + ")";
         color: green;
     }
 }
