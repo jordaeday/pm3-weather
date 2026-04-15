@@ -1,11 +1,81 @@
 export component MainWindow inherits Window {
     in property <float> temperature;
-    in property <string> city-name;
-    in property <int> weather-code;
-    in property <string> state-name;
-    
-    Text {
-        text: "Current temperature in " + city-name + ", " + state-name + ": " + temperature + "°F" + " (weather code: " + weather-code + ")";
-        color: green;
+    in property <string> city-name: "Seattle";
+    in property <int> weather-code: 0;
+    in property <string> state-name: "Washington";
+    in property <string> time: "00:00:00";
+
+    always-on-top: false;
+    background: black;
+    preferred-width: 960px; // PROXmobil3 width
+    preferred-height: 800px; // PROXmobil3 height
+
+    // Top rectangle
+    Rectangle {
+        x: 0;
+        y: 0;
+        width: root.preferred-width;
+        height: root.preferred-height * 0.5;
+
+        VerticalLayout {
+            alignment: center;
+            spacing: 8px;
+            
+            Text {
+                text: city-name + ", " + state-name;
+                color: white;
+                font-size: 24px;
+                horizontal-alignment: center;
+            }
+
+            Text {
+                text: time;
+                color: white;
+                font-size: 100px;
+                horizontal-alignment: center;
+            }
+        }
+    }
+
+    // Bottom left rectangle
+    Rectangle {
+        x: 0;
+        y: root.preferred-height * 0.5;
+        width: root.preferred-width * 0.5;
+        height: root.preferred-height * 0.5;
+        background: red;
+
+        VerticalLayout {
+            alignment: center;
+            spacing: 8px;
+
+            Text {
+                text: temperature + "°F";
+                color: white;
+                font-size: 100px;
+                horizontal-alignment: center;
+            }
+        }
+    }
+
+    // Bottom right rectangle
+    Rectangle {
+        x: root.preferred-width * 0.5;
+        y: root.preferred-height * 0.5;
+        width: root.preferred-width * 0.5;
+        height: root.preferred-height * 0.5;   
+        background: blue;
+
+        VerticalLayout {
+            alignment: center;
+            spacing: 8px;
+
+            Text {
+                text: "Weather Code: " + weather-code;
+                color: white;
+                font-size: 24px;
+                horizontal-alignment: center;
+            }
+        }
     }
 }

@@ -1,32 +1,8 @@
 slint::include_modules!();
-use serde::Deserialize;
-use reqwest;
+use slint::{Timer, TimerMode};
 
-#[derive(Debug, Deserialize)]
-struct WeatherResponse {
-    current: CurrentWeather,
-}
-
-#[derive(Debug, Deserialize)]
-struct CurrentWeather {
-    //time: String, // will be used later
-    #[serde(rename = "temperature_2m")]
-    temperature: f64,
-    weather_code: i32,
-}
-
-#[derive(Debug, Deserialize)]
-struct GeocodingResponse {
-    results: Vec<GeocodingResult>,
-}
-
-#[derive(Debug, Deserialize)]
-struct GeocodingResult {
-    latitude: f64,
-    longitude: f64,
-    #[serde(rename = "admin1")]
-    state: String,
-}
+use pm3_weather::time::sync_time_from_ntp;
+use pm3_weather::weather::{get_weather_from_city, get_state_from_city};
 
 fn capitalize(s: &str) -> String {
     let mut c = s.chars();
@@ -57,27 +33,53 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         slint::platform::set_platform(Box::new(platform)).unwrap();
     }
 
-    // For getting weather, first get gecoords, then use those for weather
-    // geocoding api
-    let geocoding_url = format!("https://geocoding-api.open-meteo.com/v1/search?name={}", city_name);
-    let geocoding_response = reqwest::blocking::get(&geocoding_url)?.json::<GeocodingResponse>()?;
-    let latitude: f64 = geocoding_response.results[0].latitude;
-    let longitude: f64 = geocoding_response.results[0].longitude;
-    let state_name = &geocoding_response.results[0].state;
-
-    println!("Coordinates for {}, {}: {}, {}", city_name, state_name, latitude, longitude);
-
-    // weather api
-    let weather_url = format!("https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&current=temperature_2m,weather_code&wind_speed_unit=mph&temperature_unit=fahrenheit&timezone=auto", latitude, longitude);
-    let response = reqwest::blocking::get(&weather_url)?.json::<WeatherResponse>()?;
-    println!("Current temperature in {}, {}: {}°F, weather code: {}", city_name, state_name, response.current.temperature, response.current.weather_code);
-
     let main_window = MainWindow::new()?;
 
-    main_window.set_temperature(response.current.temperature as f32);
-    main_window.set_weather_code(response.current.weather_code);
-    main_window.set_city_name(city_name.into());
-    main_window.set_state_name(state_name.clone().into());
+    main_window.set_city_name(city_name.clone().into());
+    main_window.set_state_name(get_state_from_city(&city_name)?.state.clone().into());
+
+    let window_weak = main_window.as_weak();
+
+    // Update system time from NTP every 5 minutes
+    if let Err(e) = sync_time_from_ntp() {
+        eprintln!("Failed to get time from NTP: {}", e);
+    }
+    let ntp_timer = Timer::default();
+    ntp_timer.start(TimerMode::Repeated, std::time::Duration::from_secs(300), move || {
+        if let Err(e) = sync_time_from_ntp() {
+            eprintln!("Failed to get time from NTP: {}", e);
+        }
+    });
+
+    // Get weather every 15 minutes
+    let weather_response = get_weather_from_city(&city_name)?;
+    main_window.set_temperature(weather_response.current.temperature as f32);
+    main_window.set_weather_code(weather_response.current.weather_code);
+
+    let window_weak_weather = window_weak.clone();
+    let weather_timer = Timer::default();
+    weather_timer.start(TimerMode::Repeated, std::time::Duration::from_secs(900), move || {
+        match get_weather_from_city(&city_name) {
+            Ok(response) => {
+                if let Some(window) = window_weak_weather.upgrade() {
+                    window.set_temperature(response.current.temperature as f32);
+                    window.set_weather_code(response.current.weather_code);
+                }
+            }
+            Err(e) => eprintln!("Failed to get weather: {}", e),
+        }
+    });
+
+    // Update display time from system clock every second
+    let window_weak_time = window_weak.clone();
+    let time_timer = Timer::default();
+    time_timer.start(TimerMode::Repeated, std::time::Duration::from_secs(1), move || {
+        if let Some(window) = window_weak_time.upgrade() {
+            let now = chrono::Local::now();
+            window.set_time(now.format("%H:%M:%S").to_string().into());
+        }
+    });
+
     main_window.run()?;
     Ok(())
 }
