@@ -13,7 +13,7 @@ pub fn get_weather_from_city(city_name: &str) -> Result<WeatherResponse, Box<dyn
         .ok_or("City not found in geocoding API")?;
 
     let weather_url = format!(
-        "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&current=temperature_2m,weather_code",
+        "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&current=temperature_2m,weather_code&temperature_unit=fahrenheit&precipitation_unit=inch",
         location.latitude, location.longitude
     );
     let weather_response: WeatherResponse = reqwest::blocking::get(&weather_url)?.json()?;
