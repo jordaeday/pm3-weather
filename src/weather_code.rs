@@ -74,21 +74,21 @@ impl WeatherCode {
   pub fn sky_color(&self) -> Color {
     match self {
       WeatherCode::ClearSky | WeatherCode::MostlyClear
-        => Color::from_rgb_u8(100, 160, 230),
+        => Color::from_rgb_u8(20, 50, 90),
       WeatherCode::PartlyCloudy
-        => Color::from_rgb_u8(120, 150, 190),
+        => Color::from_rgb_u8(30, 45, 65),
       WeatherCode::Overcast
-        => Color::from_rgb_u8(90, 90, 100),
+        => Color::from_rgb_u8(30, 30, 38),
       WeatherCode::Fog
-        => Color::from_rgb_u8(150, 150, 160),
+        => Color::from_rgb_u8(40, 42, 48),
       WeatherCode::Drizzle | WeatherCode::Rain
-        => Color::from_rgb_u8(60, 80, 110),
-      WeatherCode::FreezingDrizzle | WeatherCode::FreezingRain 
-        => Color::from_rgb_u8(80, 100, 130),
+        => Color::from_rgb_u8(15, 25, 45),
+      WeatherCode::FreezingDrizzle | WeatherCode::FreezingRain
+        => Color::from_rgb_u8(20, 30, 50),
       WeatherCode::Snowfall
-        => Color::from_rgb_u8(180, 190, 210),
+        => Color::from_rgb_u8(45, 50, 65),
       WeatherCode::Thunderstorm
-        => Color::from_rgb_u8(30, 30, 50),
+        => Color::from_rgb_u8(10, 10, 20),
     }
   }
 }
