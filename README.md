@@ -25,7 +25,7 @@ cargo zigbuild --release --target armv7-unknown-linux-gnueabihf.2.28 --no-defaul
 cat target/armv7-unknown-linux-gnueabihf/release/pm3-weather | ssh root@<DEVICE_IP> 'cat > /init/board/weather && chmod +x /init/board/weather'
 ```
 3. Create the systemd service at `/init/board/weather.service`:
-```
+```ini
 [Unit]
 Description=Board Weather Display Service
 After=network.target
@@ -41,7 +41,7 @@ WorkingDirectory=/init/board
 WantedBy=multi-user.target
 ```
 4. Create the autorun script at `/init/autorun/99-weather.sh` to install the service on boot:
-```
+```sh
 #!/bin/sh
 
 mount -o remount,rw /
