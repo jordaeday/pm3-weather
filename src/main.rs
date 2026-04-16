@@ -68,6 +68,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let weather_response = get_weather_from_city(&city_name)?;
     main_window.set_temperature(weather_response.current.temperature as f32);
     main_window.set_weather_code(weather_response.current.weather_code);
+    main_window.set_conditions(WeatherCode::from_code(weather_response.current.weather_code).description_name().into());
 
     // Set initial sky colors
     let code = WeatherCode::from_code(weather_response.current.weather_code);
@@ -83,6 +84,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if let Some(window) = window_weak_weather.upgrade() {
                     window.set_temperature(response.current.temperature as f32);
                     window.set_weather_code(response.current.weather_code);
+                    let code = WeatherCode::from_code(response.current.weather_code);
+                    window.set_conditions(code.description_name().into());
                 }
             }
             Err(e) => eprintln!("Failed to get weather: {}", e),
@@ -96,6 +99,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(window) = window_weak_time.upgrade() {
             let now = chrono::Local::now();
             window.set_time(now.format("%H:%M:%S").to_string().into());
+            window.set_date(now.format("%A, %B %-d, %Y").to_string().into());
         }
     });
 

@@ -1,3 +1,4 @@
+import { TabWidget } from "std-widgets.slint";
 export component MainWindow inherits Window {
     in property <float> temperature;
     in property <string> city-name: "Seattle";
@@ -5,7 +6,9 @@ export component MainWindow inherits Window {
     in property <int> weather-code: 0;
     width: 960px;
     in property <string> state-name: "Washington";
+    in property <string> date;
     in property <string> time: "00:00:00";
+    in property <string> conditions: "Clear";
     in-out property <color> sky-top: #ff0000;
     in-out property <color> sky-bottom: #0000ff;
 
@@ -30,84 +33,104 @@ export component MainWindow inherits Window {
         background: @linear-gradient(180deg, sky-top 0%, sky-bottom 50%);
     }
 
+    // Screen layout
     VerticalLayout {
-        // Top rectangle
-        Rectangle {
-            vertical-stretch: 1;
-            background: transparent;
+        padding: 20px;
 
-            VerticalLayout {
-                alignment: center;
-                spacing: 8px;
-                
-                Text {
-                    text: city-name + ", " + state-name;
-                    color: white;
-                    font-size: 24px;
-                    horizontal-alignment: center;
-                }
-
-                Text {
-                    text: time;
-                    color: white;
-                    font-size: 100px;
-                    horizontal-alignment: center;
-                }
-            }
-        }
-
-        // Divider line
-        HorizontalLayout {
-            alignment: center;
+        VerticalLayout {
+            // Top rectangle
             Rectangle {
-                background: white;
-                width: 80%;
-                height: 2px;
-            }
-        }
-
-        // Bottom rectangles container
-        HorizontalLayout {
-            vertical-stretch: 1;
-            // Bottom left rectangle
-            Rectangle {
+                vertical-stretch: 1;
                 background: transparent;
 
                 VerticalLayout {
                     alignment: center;
                     spacing: 8px;
+                    
+                    Text {
+                        text: city-name + ", " + state-name;
+                        color: #ffffffaa;
+                        font-size: 24px;
+                        horizontal-alignment: center;
+                    }
 
                     Text {
-                        text: temperature + "°F";
+                        text: time;
                         color: white;
                         font-size: 100px;
+                        horizontal-alignment: center;
+                    }
+
+                    Text {
+                        text: date;
+                        color: #ffffffaa;
+                        font-size: 24px;
                         horizontal-alignment: center;
                     }
                 }
             }
 
             // Divider line
-            VerticalLayout {
-                alignment: start;
-                Rectangle {
-                    background: white;
-                    width: 2px;
-                    height: 80%;
-                }
+            Rectangle {
+                background: white;
+                height: 1px;
+                width: root.width * 0.8;
+                x: root.width * 0.1;
             }
 
-            // Bottom right rectangle
-            Rectangle {
-                background: transparent;
+            // Bottom rectangles container
+            HorizontalLayout {
+                vertical-stretch: 1;
+
+                // Bottom left rectangle
+
 
                 VerticalLayout {
                     alignment: center;
-                    spacing: 8px;
+                    width: 50%;
+                    spacing: 15px;
 
                     Text {
-                        text: "Weather Code: " + weather-code;
-                        color: white;
+                        text: "TEMP";
+                        color: #ffffff99;
                         font-size: 24px;
+                        horizontal-alignment: center;
+                    }
+
+                    Text {
+                        text: temperature + "°F";
+                        color: white;
+                        font-size: 80px;
+                        horizontal-alignment: center;
+                    }
+                }
+
+                // Divider line
+                VerticalLayout {
+                    padding-bottom: root.height * 0.05;
+                    Rectangle {
+                        background: white;
+                        width: 1px;
+                    }
+                }
+
+                // Bottom right rectangle
+                VerticalLayout {
+                    alignment: center;
+                    width: 50%;
+                    spacing: 15px;
+
+                    Text {
+                        text: "CONDITIONS";
+                        color: #ffffff99;
+                        font-size: 24px;
+                        horizontal-alignment: center;
+                    }
+
+                    Text {
+                        text: conditions;
+                        color: white;
+                        font-size: 80px;
                         horizontal-alignment: center;
                     }
                 }

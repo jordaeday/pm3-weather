@@ -39,21 +39,21 @@ impl WeatherCode {
     }
   }
 
-  // pub fn icon_name(&self) -> &'static str {
-  //   match self {
-  //     WeatherCode::ClearSky => "clear_sky",
-  //     WeatherCode::MostlyClear => "mostly_clear",
-  //     WeatherCode::PartlyCloudy => "partly_cloudy",
-  //     WeatherCode::Overcast => "overcast",
-  //     WeatherCode::Fog => "fog",
-  //     WeatherCode::Drizzle => "drizzle",
-  //     WeatherCode::FreezingDrizzle => "freezing_drizzle",
-  //     WeatherCode::Rain => "rain",
-  //     WeatherCode::FreezingRain => "freezing_rain",
-  //     WeatherCode::Snowfall => "snowfall",
-  //     WeatherCode::Thunderstorm => "thunderstorm",
-  //   }
-  // }
+  pub fn description_name(&self) -> &'static str {
+    match self {
+      WeatherCode::ClearSky => "Clear Sky",
+      WeatherCode::MostlyClear => "Mostly Clear",
+      WeatherCode::PartlyCloudy => "Partly Cloudy",
+      WeatherCode::Overcast => "Overcast",
+      WeatherCode::Fog => "Fog",
+      WeatherCode::Drizzle => "Drizzle",
+      WeatherCode::FreezingDrizzle => "Freezing Drizzle",
+      WeatherCode::Rain => "Rain",
+      WeatherCode::FreezingRain => "Freezing Rain",
+      WeatherCode::Snowfall => "Snowfall",
+      WeatherCode::Thunderstorm => "Thunderstorm",
+    }
+  }
 
   pub fn effects(&self) -> &[Effect] {
     match self {
