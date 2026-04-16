@@ -16,12 +16,12 @@ fn capitalize(s: &str) -> String {
 
 fn time_of_day_color(hour: u32) -> slint::Color {
     match hour {
-        0..=5 => Color::from_rgb_u8(0x00, 0x00, 0x20),  // Night
-        6..=11 => Color::from_rgb_u8(0x4A, 0x30, 0x00), // Morning
-        12..=17 => Color::from_rgb_u8(0x1A, 0x3A, 0x4A), // Afternoon
-        18..=19 => Color::from_rgb_u8(0x4A, 0x15, 0x00), // Evening
-        20..=23 => Color::from_rgb_u8(0x00, 0x00, 0x20), // Night
-        _ => Color::from_rgb_u8(0x00, 0x00, 0x20),       // Default to night
+        0..=5 => Color::from_rgb_u8(0x00, 0x00, 0x20),   // Night #000020
+        6..=11 => Color::from_rgb_u8(0xFF, 0xA5, 0x00),  // Morning #FFA500
+        12..=17 => Color::from_rgb_u8(0x87, 0xCE, 0xEB), // Afternoon #87CEEB
+        18..=19 => Color::from_rgb_u8(0xFF, 0x45, 0x00), // Evening #FF4500
+        20..=23 => Color::from_rgb_u8(0x00, 0x00, 0x20), // Night #000020
+        _ => Color::from_rgb_u8(0x00, 0x00, 0x20),       // Default to night #000020
     }
 }
 

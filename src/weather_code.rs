@@ -74,21 +74,21 @@ impl WeatherCode {
   pub fn sky_color(&self) -> Color {
     match self {
       WeatherCode::ClearSky | WeatherCode::MostlyClear
-        => Color::from_rgb_u8(20, 50, 90),
+        => Color::from_rgb_u8(0x4A, 0x90, 0xD9), // #4A90D9
       WeatherCode::PartlyCloudy
-        => Color::from_rgb_u8(30, 45, 65),
+        => Color::from_rgb_u8(0x7A, 0x9D, 0xC0), // #7A9DC0
       WeatherCode::Overcast
-        => Color::from_rgb_u8(30, 30, 38),
+        => Color::from_rgb_u8(0x8A, 0x8D, 0x9C), // #8A8D9C
       WeatherCode::Fog
-        => Color::from_rgb_u8(40, 42, 48),
+        => Color::from_rgb_u8(0x9D, 0xA0, 0xAB), // #9DA0AB
       WeatherCode::Drizzle | WeatherCode::Rain
-        => Color::from_rgb_u8(15, 25, 45),
+        => Color::from_rgb_u8(0x5A, 0x70, 0x90), // #5A7090
       WeatherCode::FreezingDrizzle | WeatherCode::FreezingRain
-        => Color::from_rgb_u8(20, 30, 50),
+        => Color::from_rgb_u8(0x6A, 0x85, 0xA0), // #6A85A0
       WeatherCode::Snowfall
-        => Color::from_rgb_u8(45, 50, 65),
+        => Color::from_rgb_u8(0xA0, 0xB8, 0xCC), // #A0B8CC
       WeatherCode::Thunderstorm
-        => Color::from_rgb_u8(10, 10, 20),
+        => Color::from_rgb_u8(0x45, 0x45, 0x60), // #454560
     }
   }
 }
