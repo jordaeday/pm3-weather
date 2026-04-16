@@ -29,10 +29,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let args: Vec<String> = std::env::args().skip(1).collect();
     if args.len() < 1 {
-        eprintln!("Usage: weather <city-name>");
+        eprintln!("Usage: weather <city-name> [state/region]");
         std::process::exit(1);
     }
     let city_name = capitalize(&args[0]);
+    let region: Option<String> = args.get(1).map(|s| capitalize(s));
 
     #[cfg(feature = "framebuffer")] {
         use slint_backend_linuxfb::LinuxFbPlatformBuilder;
@@ -49,7 +50,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let main_window = MainWindow::new()?;
 
     main_window.set_city_name(city_name.clone().into());
-    main_window.set_state_name(get_state_from_city(&city_name)?.state.clone().into());
+    let location = get_state_from_city(&city_name, region.as_deref())?;
+    let display_region = region.clone()
+        .or_else(|| location.state.clone())
+        .unwrap_or_default();
+    main_window.set_state_name(display_region.into());
 
     let window_weak = main_window.as_weak();
 
@@ -65,7 +70,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     });
 
     // Get weather every 15 minutes
-    let weather_response = get_weather_from_city(&city_name)?;
+    let weather_response = get_weather_from_city(&city_name, region.as_deref())?;
     main_window.set_temperature(weather_response.current.temperature as f32);
     main_window.set_weather_code(weather_response.current.weather_code);
     main_window.set_conditions(WeatherCode::from_code(weather_response.current.weather_code).description_name().into());
@@ -78,8 +83,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let window_weak_weather = window_weak.clone();
     let weather_timer = Timer::default();
+    let region_for_timer = region;
     weather_timer.start(TimerMode::Repeated, std::time::Duration::from_secs(900), move || {
-        match get_weather_from_city(&city_name) {
+        match get_weather_from_city(&city_name, region_for_timer.as_deref()) {
             Ok(response) => {
                 if let Some(window) = window_weak_weather.upgrade() {
                     window.set_temperature(response.current.temperature as f32);

@@ -27,5 +27,5 @@ pub struct GeocodingResult {
     pub latitude: f64,
     pub longitude: f64,
     #[serde(rename = "admin1")]
-    pub state: String,
+    pub state: Option<String>,
 }
