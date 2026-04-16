@@ -2,6 +2,7 @@ use serde::Deserialize;
 
 pub mod weather;
 pub mod time;
+pub mod weather_code;
 
 #[derive(Debug, Deserialize)]
 pub struct WeatherResponse {

@@ -1,16 +1,41 @@
 export component MainWindow inherits Window {
     in property <float> temperature;
     in property <string> city-name: "Seattle";
+    height: 800px;
     in property <int> weather-code: 0;
+    width: 960px;
     in property <string> state-name: "Washington";
     in property <string> time: "00:00:00";
+    in-out property <color> sky-top: #ff0000;
+    in-out property <color> sky-bottom: #0000ff;
 
     always-on-top: false;
-    background: black;
+
+    animate sky-top {
+        duration: 1000ms;
+        easing: ease-in-out;
+    }
+
+    animate sky-bottom {
+        duration: 1000ms;
+        easing: ease-in-out;
+    }
+
+    // Set background
+    Rectangle {
+        x: 0;
+        y: 0;
+        width: root.width;
+        height: root.height;
+        background: @linear-gradient(180deg, sky-top 0%, sky-bottom 50%);
+    }
 
     VerticalLayout {
-    // Top rectangle
+        // Top rectangle
         Rectangle {
+            vertical-stretch: 1;
+            background: transparent;
+
             VerticalLayout {
                 alignment: center;
                 spacing: 8px;
@@ -31,11 +56,22 @@ export component MainWindow inherits Window {
             }
         }
 
+        // Divider line
+        HorizontalLayout {
+            alignment: center;
+            Rectangle {
+                background: white;
+                width: 80%;
+                height: 2px;
+            }
+        }
+
         // Bottom rectangles container
         HorizontalLayout {
+            vertical-stretch: 1;
             // Bottom left rectangle
             Rectangle {
-                background: red;
+                background: transparent;
 
                 VerticalLayout {
                     alignment: center;
@@ -50,9 +86,19 @@ export component MainWindow inherits Window {
                 }
             }
 
+            // Divider line
+            VerticalLayout {
+                alignment: start;
+                Rectangle {
+                    background: white;
+                    width: 2px;
+                    height: 80%;
+                }
+            }
+
             // Bottom right rectangle
             Rectangle {
-                background: blue;
+                background: transparent;
 
                 VerticalLayout {
                     alignment: center;

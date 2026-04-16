@@ -1,5 +1,7 @@
 slint::include_modules!();
-use slint::{Timer, TimerMode};
+use chrono::Timelike;
+use pm3_weather::weather_code::WeatherCode;
+use slint::{Color, Timer, TimerMode};
 
 use pm3_weather::time::sync_time_from_ntp;
 use pm3_weather::weather::{get_weather_from_city, get_state_from_city};
@@ -9,6 +11,17 @@ fn capitalize(s: &str) -> String {
     match c.next() {
         None => String::new(),
         Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
+    }
+}
+
+fn time_of_day_color(hour: u32) -> slint::Color {
+    match hour {
+        0..=5 => Color::from_rgb_u8(0x00, 0x00, 0x20), // Night
+        6..=11 => Color::from_rgb_u8(0xFF, 0xA5, 0x00), // Morning
+        12..=17 => Color::from_rgb_u8(0x87, 0xCE, 0xEB), // Afternoon
+        18..=19 => Color::from_rgb_u8(0xFF, 0x45, 0x00), // Evening
+        20..=23 => Color::from_rgb_u8(0x00, 0x00, 0x20), // Night
+        _ => Color::from_rgb_u8(0x00, 0x00, 0x20), // Default to night for invalid hours
     }
 }
 
@@ -55,6 +68,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let weather_response = get_weather_from_city(&city_name)?;
     main_window.set_temperature(weather_response.current.temperature as f32);
     main_window.set_weather_code(weather_response.current.weather_code);
+
+    // Set initial sky colors
+    let code = WeatherCode::from_code(weather_response.current.weather_code);
+    let now = chrono::Local::now();
+    main_window.set_sky_top(code.sky_color());
+    main_window.set_sky_bottom(time_of_day_color(now.hour()));
 
     let window_weak_weather = window_weak.clone();
     let weather_timer = Timer::default();
